@@ -4,6 +4,7 @@ import datetime
 
 sizex = 20
 sizey = 10
+showgraph = True
 
 def update_graph(data):
     data = json.loads(data)
@@ -39,4 +40,4 @@ def update_graph(data):
         plt.savefig(key + '.png')
         i += 1
 
-    plt.show()
+    if showgraph: plt.show()

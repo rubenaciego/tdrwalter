@@ -25,18 +25,30 @@ class Application(Gtk.Application):
         self.window = Gtk.Window(title='TDR')
         self.window.connect('destroy', Gtk.main_quit)
         self.window.set_resizable(False)
-        self.window.set_size_request(500, 400)
+        self.window.set_size_request(800, 600)
         self.window.set_position(Gtk.WindowPosition.CENTER)
 
         self.container = Gtk.Fixed()
         self.window.add(self.container)
 
-        self.label = Gtk.Label()
-        self.button = Gtk.Button(label='Press me')
-        self.button.connect('clicked', Application.button_clicked)
+        self.bluetooth_label = Gtk.Label(label='Bluetooth: not connected')
+        self.container.put(self.bluetooth_label, 50, 50)
 
-        self.container.put(self.button, 300, 300)
-        self.container.put(self.label, 200, 100)
+        self.data_label = Gtk.Label(label='Current data:')
+        self.container.put(self.data_label, 50, 150)
+        
+        self.label = Gtk.Label()
+        self.container.put(self.label, 100, 210)
+
+        self.arduino_label = Gtk.Label(label='Arduino 1: not connected\nArduino 2: not connected')
+        self.container.put(self.arduino_label, 500, 210)
+
+        self.lcd_label = Gtk.Label(label='LCD 1: not connected\nLCD 2: not connected')
+        self.container.put(self.lcd_label, 500, 270)
+
+        self.clear_reg_button = Gtk.Button(label='Clear register')
+        self.clear_reg_button.connect('clicked', Application.clear_reg_button_clicked)
+        self.container.put(self.clear_reg_button, 100, 500)
 
         self.window.show_all()
 
@@ -52,7 +64,6 @@ class Application(Gtk.Application):
         if not os.path.exists('register.json'):
             with open('register.json', 'w') as file:
                 file.write('[\n]')
-
 
 
     @staticmethod
@@ -111,8 +122,8 @@ class Application(Gtk.Application):
 
 
     @staticmethod
-    def button_clicked(button):
-        print('Button clicked')
+    def clear_reg_button_clicked(button):
+        print('Clear register clicked')
     
 
     def update_lcd(self):
