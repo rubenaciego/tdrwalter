@@ -24,7 +24,7 @@ class DataRead:
         
     def read_input(self):
         if not self.connected:
-            return
+            return {}
         
         try:
             data = json.loads(self.ser.readline().decode().strip().replace("'", '"'))

@@ -15,7 +15,7 @@ class BluetoothIO:
         self.server_sock.listen(1)
         self.closed = True
 
-        port = self.server_sock.getsockname()[1]
+        self.port = self.server_sock.getsockname()[1]
 
         UUID = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 
@@ -25,8 +25,10 @@ class BluetoothIO:
                           profiles = [SERIAL_PORT_PROFILE], 
                           #protocols = [OBEX_UUID] 
                           )
-        
-        print("Waiting for bluetooth connection on RFCOMM channel %d" % port)
+
+
+    def wait_for_connection(self):
+        print("Waiting for bluetooth connection on RFCOMM channel %d" % self.port)
 
         self.client_sock, client_info = self.server_sock.accept()
         print("Accepted Bluetooth connection from ", client_info)

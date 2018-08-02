@@ -40,7 +40,7 @@ class Application(Gtk.Application):
 
         self.datareader1 = dataread.DataRead('/dev/ttyACM0')
         self.datareader2 = dataread.DataRead('/dev/ttyACM1')
-        self.bluetoothdv = None
+        self.bluetoothdv = bluetoothio.BluetoothIO()
         self.lcd1 = lcd.LCD(0x3f)
         #self.lcd2 = lcd.LCD(address ?)
 
@@ -48,7 +48,7 @@ class Application(Gtk.Application):
     @staticmethod
     def update_bluetooth(btdevice):
         while True:
-            btdevice = bluetoothio.BluetoothIO()
+            btdevice.wait_for_connection()
 
             try:
                 while True:
