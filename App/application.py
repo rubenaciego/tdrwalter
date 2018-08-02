@@ -5,6 +5,7 @@ import dataread
 import lcd
 import grapher
 import bluetoothio
+import datetime
 import matplotlib.pyplot as plt
 import threading
 
@@ -34,45 +35,56 @@ class Application(Gtk.Application):
 
         self.window.show_all()
 
-        self.datareader = dataread.DataRead()
-        self.bluetoothdv = bluetoothio.BluetoothIO()
-##        self.lcd1 = lcd.LCD(0x3f)
+        self.datareader1 = dataread.DataRead('/dev/ttyACM0')
+        self.datareader2 = dataread.DataRead('/dev/ttyACM1')
+        self.bluetoothdv = None
+        #self.lcd1 = lcd.LCD(0x3f)
+        #self.lcd2 = lcd.LCD(address ?)
 
 
     @staticmethod
-    def read_bt(btio):
-      try:
+    def update_bluetooth(btdevice):
+        btdevice = bluetoothio.BluetoothIO()
+
+        try:
+            while True:
+                data = btdevice.read()
+                if len(data) == 0: break
+                
+                print("Received " + data)
+                
+        except IOError:
+            pass
+
+        btdevice.close()
+
+
+    @staticmethod
+    def set_text(label, datareaders, btio):
         
-        while True:
-            data = btio.read()
-            if len(data) == 0: break
-            
-            print("Received [%s]" % data)
-            
-      except IOError:
-          pass
+        data1 = datareaders[0].read_input()
+        data2 = datareaders[1].read_input()
 
-      btio.close()
-      return False
+        data = {**data1, **data2}
 
+        data['TIME'] = datetime.datetime.now().strftime('%H:%M:%S %d/%m/%Y')
+        stringdata = ''
+        
+        for key, val in data.items():
+            stringdata += key + ': ' + str(val) + '\n'
 
-    @staticmethod
-    def set_text(label, func, btio):
-        text = func()
-        label.set_text(text[0])
-        btio.write(text[1])
+        label.set_text(stringdata)
+        btio.write(str(data))
         
         with open('register.json', 'r') as file:
             read = file.read()
 
         with open('register.json', 'w+') as file:
             read = read[:read.find(']')]
-            data = read + '\t' + text[1] + ',\n]'
-            file.write(data)
-            print('\nData:\n' + data)
+            register = read + '\t' + str(data) + ',\n]'
+            file.write(register)
 
-    
-##        grapher.update_graph(data)
+        #grapher.update_graph(register)
         
         return True
 
@@ -80,20 +92,23 @@ class Application(Gtk.Application):
     @staticmethod
     def button_clicked(button):
         print('Button clicked')
+    
+
+    def update_lcd(self):
+        self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
+        self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
 
 
     def run(self):
         GObject.threads_init()
-        GLib.timeout_add(5000, Application.set_text, self.label, self.datareader.read_input, self.bluetoothdv)
-##        GLib.timeout_add(1000, update_lcd)
-        thread = threading.Thread(target=Application.read_bt, args=[self.bluetoothdv])
-        thread.daemon = True
-        thread.start()
+        GLib.timeout_add(5000, Application.set_text, self.label, [self.datareader1, self.datareader2], self.bluetoothdv)
+        #GLib.timeout_add(1000, update_lcd, self)
+
+        btthread = threading.Thread(target=Application.update_bluetooth, args=[self.bluetoothdv])
+        btthread.daemon = True
+        btthread.start()
+
         Gtk.main()
-
-
-def update_lcd():
-    self.lcd1.send_string('Hello world!', lcd.LCD.LINE_1)
 
 
 if __name__ == '__main__':

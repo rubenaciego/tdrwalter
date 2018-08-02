@@ -40,4 +40,3 @@ def update_graph(data):
         i += 1
     
     plt.show()
-

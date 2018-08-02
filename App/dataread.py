@@ -5,31 +5,28 @@ import datetime
 
 class DataRead:
 
-    def __init__(self):
-
+    def __init__(self, port, baud=9600):
         try:
-            self.ser = serial.Serial('/dev/ttyACM0', 9600)
+            self.ser = serial.Serial(port, baud)
+            self.connected = True
         except IOError:
-            print('IOError: Could not open the Serial Port')
+            print('IOError: Could not open the Serial Port ' + port)
+            self.connected = False
 
 
     def __del__(self):
-        try:
+        if self.connected:
             self.ser.close()
-        except Exception:
-            pass
+            self.connected = False
         
         
     def read_input(self):
+        if not self.connected:
+            return
+        
         try:
             data = json.loads(self.ser.readline().decode().strip().replace("'", '"'))
-        except (UnicodeDecodeError, json.decoder.JSONDecodeError, Exception):
+        except (UnicodeDecodeError, json.decoder.JSONDecodeError):
             data = {}
 
-        data['TIME'] = datetime.datetime.now().strftime('%H:%M:%S %d/%m/%Y')
-        stringdata = ''
-        
-        for key, val in data.items():
-            stringdata += key + ': ' + str(val) + '\n'
-
-        return (stringdata, str(data))
+        return data
