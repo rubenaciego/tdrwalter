@@ -70,7 +70,7 @@ class Application(Gtk.Application):
 
         data = {**data1, **data2}
 
-        for i in dataread.DataRead.POSSIBLEDATA:
+        for i in dataread.DataRead.POSSIBLE_DATA:
             if i not in data:
                 data[i] = 0
 

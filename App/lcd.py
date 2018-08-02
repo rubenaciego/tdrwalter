@@ -31,20 +31,22 @@ class LCD:
         #Open I2C interface
         #self.bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
 
+        self.bus = smbus.SMBus(1) # Rev 2 Pi uses 1
+
         try:
-            self.bus = smbus.SMBus(1) # Rev 2 Pi uses 1
+            # Initialise display
+            self.send_byte(0x33, LCD.CMD) # 110011 Initialise
+            self.send_byte(0x32, LCD.CMD) # 110010 Initialise
+            self.send_byte(0x06, LCD.CMD) # 000110 Cursor move direction
+            self.send_byte(0x0C, LCD.CMD) # 001100 Display On,Cursor Off, Blink Off 
+            self.send_byte(0x28, LCD.CMD) # 101000 Data length, number of lines, font size
+            self.send_byte(0x01, LCD.CMD) # 000001 Clear display
             self.connected = True
+
         except Exception:
             self.connected = False
             return
 
-        # Initialise display
-        self.send_byte(0x33, LCD.CMD) # 110011 Initialise
-        self.send_byte(0x32, LCD.CMD) # 110010 Initialise
-        self.send_byte(0x06, LCD.CMD) # 000110 Cursor move direction
-        self.send_byte(0x0C, LCD.CMD) # 001100 Display On,Cursor Off, Blink Off 
-        self.send_byte(0x28, LCD.CMD) # 101000 Data length, number of lines, font size
-        self.send_byte(0x01, LCD.CMD) # 000001 Clear display
         time.sleep(LCD.E_DELAY)
 
 
@@ -64,6 +66,11 @@ class LCD:
 
         self.bus.write_byte(self.I2C_ADDR, bits_high)
         self.toggle_enable(bits_high)
+
+        # Low bits
+
+        self.bus.write_byte(self.I2C_ADDR, bits_low)
+        self.toggle_enable(bits_low)
         
 
     def toggle_enable(self, bits):

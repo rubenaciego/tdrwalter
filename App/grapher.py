@@ -34,5 +34,5 @@ def update_graph(data):
         plt.plot(x, val, 'ro')
         plt.xlabel('Time')
         plt.ylabel(key)
-        plt.savefig(key+'.png')
+        plt.savefig(key + '.png')
         i += 1

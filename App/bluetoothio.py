@@ -13,6 +13,7 @@ class BluetoothIO:
         self.server_sock = BluetoothSocket(RFCOMM)
         self.server_sock.bind(("", PORT_ANY))
         self.server_sock.listen(1)
+        self.closed = True
 
         port = self.server_sock.getsockname()[1]
 
