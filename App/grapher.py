@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import json
 import datetime
- 
+
+sizex = 20
+sizey = 10
 
 def update_graph(data):
-    data = json.loads(data.replace("'", '"'))
+    data = json.loads(data)
     
     xvalues = []
     yvalues = {}
@@ -29,10 +31,12 @@ def update_graph(data):
 
     i = 0
     for key, val in yvalues.items():
-        plt.figure(i)
+        plt.figure(i, figsize=(sizex, sizey))
         plt.xticks(x, xvalues)
         plt.plot(x, val, 'ro')
         plt.xlabel('Time')
         plt.ylabel(key)
         plt.savefig(key + '.png')
         i += 1
+
+    plt.show()

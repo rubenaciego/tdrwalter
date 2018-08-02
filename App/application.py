@@ -8,6 +8,7 @@ import bluetoothio
 import datetime
 import matplotlib.pyplot as plt
 import threading
+from multiprocessing import Process
 
 
 gi.require_version('Gtk', '3.0')
@@ -16,7 +17,7 @@ from gi.repository import GLib, GObject, Gtk
 
 class Application(Gtk.Application):
 
-    UPDATE_INTERVAL = 5000
+    UPDATE_INTERVAL = 25000
     LCD_INTERVAL = 1000
 
     def __init__(self):
@@ -41,8 +42,11 @@ class Application(Gtk.Application):
         self.datareader1 = dataread.DataRead('/dev/ttyACM0')
         self.datareader2 = dataread.DataRead('/dev/ttyACM1')
         self.bluetoothdv = bluetoothio.BluetoothIO()
+        
         self.lcd1 = lcd.LCD(0x3f)
         #self.lcd2 = lcd.LCD(address ?)
+
+        self.graphprocess = Process(target=grapher.update_graph, args=[''])
 
 
     @staticmethod
@@ -64,9 +68,9 @@ class Application(Gtk.Application):
 
 
     @staticmethod
-    def set_text(label, datareaders, btio):
-        data1 = datareaders[0].read_input()
-        data2 = datareaders[1].read_input()
+    def set_text(app):
+        data1 = app.datareader1.read_input()
+        data2 = app.datareader2.read_input()
 
         data = {**data1, **data2}
 
@@ -80,18 +84,24 @@ class Application(Gtk.Application):
         for key, val in data.items():
             stringdata += key + ': ' + str(val) + '\n'
 
-        label.set_text(stringdata)
-        btio.write(str(data))
+        app.label.set_text(stringdata)
+        app.bluetoothdv.write(str(data).replace("'", '"'))
         
-        with open('../register.json', 'r') as file:
+        with open('register.json', 'r') as file:
             read = file.read()
 
-        with open('../register.json', 'w+') as file:
+        with open('register.json', 'w+') as file:
             read = read[:read.find(']')]
-            register = read + '\t' + str(data) + ',\n]'
+            register = read + '\t,' + str(data).replace("'", '"') + '\n]'
             file.write(register)
 
-        grapher.update_graph(register)
+        #grapher.update_graph(register)
+
+        if (app.graphprocess.is_alive()):
+            app.graphprocess.terminate()
+
+        app.graphprocess = Process(target=grapher.update_graph, args=[register])
+        app.graphprocess.start()
         
         return True
 
@@ -108,7 +118,7 @@ class Application(Gtk.Application):
 
     def run(self):
         GObject.threads_init()
-        GLib.timeout_add(Application.UPDATE_INTERVAL, Application.set_text, self.label, [self.datareader1, self.datareader2], self.bluetoothdv)
+        GLib.timeout_add(Application.UPDATE_INTERVAL, Application.set_text, self)
         GLib.timeout_add(Application.LCD_INTERVAL, Application.update_lcd, self)
 
         btthread = threading.Thread(target=Application.update_bluetooth, args=[self.bluetoothdv])
