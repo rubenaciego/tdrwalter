@@ -95,8 +95,6 @@ class Application(Gtk.Application):
             register = read + '\t,' + str(data).replace("'", '"') + '\n]'
             file.write(register)
 
-        #grapher.update_graph(register)
-
         if (app.graphprocess.is_alive()):
             app.graphprocess.terminate()
 
