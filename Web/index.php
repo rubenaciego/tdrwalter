@@ -1,8 +1,10 @@
 <!DOCTYPE HTML>
 <html>
-<?php
-$data = fread(fopen("../register.json", "r"), filesize("../register.json"));
-?>
+	
+	<?php
+		$data = fread(fopen("../register.json", "r"), filesize("../register.json"));
+	?>
+	
     <head>
         <title>WALTER</title>
 
