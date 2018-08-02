@@ -30,46 +30,63 @@ class LCD:
 
         #Open I2C interface
         #self.bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
-        self.bus = smbus.SMBus(1) # Rev 2 Pi uses 1
+
+        try:
+            self.bus = smbus.SMBus(1) # Rev 2 Pi uses 1
+            self.connected = True
+        except Exception:
+            self.connected = False
+            return
 
         # Initialise display
-        self.send_byte(0x33, CMD) # 110011 Initialise
-        self.send_byte(0x32, CMD) # 110010 Initialise
-        self.send_byte(0x06, CMD) # 000110 Cursor move direction
-        self.send_byte(0x0C, CMD) # 001100 Display On,Cursor Off, Blink Off 
-        self.send_byte(0x28, CMD) # 101000 Data length, number of lines, font size
-        self.send_byte(0x01, CMD) # 000001 Clear display
-        time.sleep(E_DELAY)
+        self.send_byte(0x33, LCD.CMD) # 110011 Initialise
+        self.send_byte(0x32, LCD.CMD) # 110010 Initialise
+        self.send_byte(0x06, LCD.CMD) # 000110 Cursor move direction
+        self.send_byte(0x0C, LCD.CMD) # 001100 Display On,Cursor Off, Blink Off 
+        self.send_byte(0x28, LCD.CMD) # 101000 Data length, number of lines, font size
+        self.send_byte(0x01, LCD.CMD) # 000001 Clear display
+        time.sleep(LCD.E_DELAY)
 
 
-    def send_byte(bits, mode):
+    def send_byte(self, bits, mode):
         # Send byte to data pins
         # bits = the data
         # mode = 1 for data
         #        0 for command
 
-        bits_high = mode | (bits & 0xF0) | (BACKLIGHT if self.backlight else NO_BACKLIGHT)
-        bits_low = mode | ((bits<<4) & 0xF0) | (BACKLIGHT if self.backlight else NO_BACKLIGHT)
+        if not self.connected:
+            return
+
+        bits_high = mode | (bits & 0xF0) | (LCD.BACKLIGHT if self.backlight else LCD.NO_BACKLIGHT)
+        bits_low = mode | ((bits<<4) & 0xF0) | (LCD.BACKLIGHT if self.backlight else LCD.NO_BACKLIGHT)
 
         # High bits
+
         self.bus.write_byte(self.I2C_ADDR, bits_high)
         self.toggle_enable(bits_high)
         
 
-    def toggle_enable(bits):
+    def toggle_enable(self, bits):
         # Toggle enable
-        time.sleep(E_DELAY)
-        self.bus.write_byte(self.I2C_ADDR, (bits | ENABLE))
-        time.sleep(E_PULSE)
-        self.bus.write_byte(self.I2C_ADDR, (bits & ~ENABLE))
-        time.sleep(E_DELAY)
+        if not self.connected:
+            return
+
+        time.sleep(LCD.E_DELAY)
+        self.bus.write_byte(self.I2C_ADDR, (bits | LCD.ENABLE))
+        time.sleep(LCD.E_PULSE)
+        self.bus.write_byte(self.I2C_ADDR, (bits & ~LCD.ENABLE))
+        time.sleep(LCD.E_DELAY)
         
 
-    def send_string(message, line):
+    def send_string(self, message, line):
         # Send string to display
-        message = message.ljust(WIDTH, " ")
 
-        self.send_byte(line, CMD)
+        if not self.connected:
+            return
 
-        for i in range(WIDTH):
-            self.send_byte(ord(message[i]), CHR)
+        message = message.ljust(LCD.WIDTH, " ")
+
+        self.send_byte(line, LCD.CMD)
+
+        for i in range(LCD.WIDTH):
+            self.send_byte(ord(message[i]), LCD.CHR)

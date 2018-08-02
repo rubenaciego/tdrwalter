@@ -4,9 +4,8 @@ import datetime
  
 
 def update_graph(data):
-
     data = json.loads(data.replace("'", '"'))
-        
+    
     xvalues = []
     yvalues = {}
     
@@ -29,7 +28,6 @@ def update_graph(data):
         x.append(i)
 
     i = 0
-    
     for key, val in yvalues.items():
         plt.figure(i)
         plt.xticks(x, xvalues)
@@ -38,5 +36,3 @@ def update_graph(data):
         plt.ylabel(key)
         plt.savefig(key+'.png')
         i += 1
-    
-    plt.show()

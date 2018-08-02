@@ -47,4 +47,3 @@ class BluetoothIO:
     def read(self):
         if not self.closed:
             return self.client_sock.recv(1024)
-

@@ -5,6 +5,8 @@ import datetime
 
 class DataRead:
 
+    POSSIBLEDATA = ('CO2', 'TEMP')
+
     def __init__(self, port, baud=9600):
         try:
             self.ser = serial.Serial(port, baud)
