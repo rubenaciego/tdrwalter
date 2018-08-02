@@ -8,6 +8,7 @@ import bluetoothio
 import datetime
 import matplotlib.pyplot as plt
 import threading
+import os
 from multiprocessing import Process
 
 
@@ -47,6 +48,11 @@ class Application(Gtk.Application):
         #self.lcd2 = lcd.LCD(address ?)
 
         self.graphprocess = Process(target=grapher.update_graph, args=[''])
+
+        if not os.path.exists('register.json'):
+            with open('register.json', 'w') as file:
+                file.write('[\n]')
+
 
 
     @staticmethod
@@ -92,7 +98,7 @@ class Application(Gtk.Application):
 
         with open('register.json', 'w+') as file:
             read = read[:read.find(']')]
-            register = read + '\t,' + str(data).replace("'", '"') + '\n]'
+            register = read + '\t' + (',' if read.find('{') != -1 else '') + str(data).replace("'", '"') + '\n]'
             file.write(register)
 
         if (app.graphprocess.is_alive()):

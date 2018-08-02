@@ -6,7 +6,6 @@ import shlex
 class BluetoothIO:
 
     def __init__(self):
-
         # Otherwise bluetooth doesn't work        
         os.system('rfkill unblock all && hciconfig hci0 up')
 
