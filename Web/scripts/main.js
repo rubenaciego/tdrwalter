@@ -1,4 +1,4 @@
-window.onload=function(){
+window.onload = function() {
 	buildHtmlTable("#data", data);
 
 	const imgDiv = document.getElementById("images");
