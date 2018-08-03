@@ -50,6 +50,29 @@ class Application(Gtk.Application):
         self.clear_reg_button.connect('clicked', Application.clear_reg_button_clicked)
         self.container.put(self.clear_reg_button, 100, 500)
 
+        self.graph_label = Gtk.Label(label='Graph settings:')
+        self.container.put(self.graph_label, 400, 360)
+
+        self.graph_win = Gtk.CheckButton(label='Display graphs')
+        self.graph_win.connect('toggled', Application.checkbox_toggle)
+        self.container.put(self.graph_win, 420, 390)
+
+        self.sizex_entry = Gtk.Entry()
+        self.sizex_entry.connect('changed', self.on_size_changed)
+        self.container.put(self.sizex_entry, 420, 440)
+
+        self.sizey_entry = Gtk.Entry()
+        self.sizey_entry.connect('changed', self.on_size_changed)
+        self.container.put(self.sizey_entry, 420, 480)
+
+        self.sizex_entry.set_text(str(grapher.sizex))
+        self.sizey_entry.set_text(str(grapher.sizey))
+
+        self.container.put(Gtk.Label(label='X size for graphics (inches)'),
+                           600, 440)
+        self.container.put(Gtk.Label(label='Y size for graphics (inches)'),
+                           600, 480)
+
         self.window.show_all()
 
         self.datareader1 = dataread.DataRead('/dev/ttyACM0')
@@ -67,6 +90,19 @@ class Application(Gtk.Application):
         if not os.path.exists('register.json'):
             with open('register.json', 'w') as file:
                 file.write('[\n]')
+
+
+    def on_size_changed(self, widget):
+        value = widget.get_text().strip()
+        value = ''.join([i for i in value if i in '0123456789'])
+        widget.set_text(value)
+
+        if value == '': value = '0'
+
+        if widget == self.sizex_entry:
+            grapher.sizex = int(value)
+        elif widget == self.sizey_entry:
+            grapher.sizey = int(value)
 
 
     def update_arduino_label(self):
@@ -116,13 +152,14 @@ class Application(Gtk.Application):
                     data = app.bluetoothdv.read()
                     if len(data) == 0: break
                     
-                    print("Received " + data)
+                    print("Received " + str(data))
                     
             except IOError:
                 pass
 
             app.bluetoothdv.close()
             app.bluetooth_label.set_text('Bluetooth: disconnected')
+            app.bluetoothdv = bluetoothio.BluetoothIO()
 
 
     @staticmethod
@@ -170,8 +207,32 @@ class Application(Gtk.Application):
 
 
     @staticmethod
+    def checkbox_toggle(button):
+        grapher.showgraph = button.get_active()
+
+
+    @staticmethod
     def clear_reg_button_clicked(button):
-        print('Clear register clicked')
+
+        def on_response(widget, response):
+            if response == Gtk.ResponseType.YES:
+                with open('register.json', 'w') as file:
+                    file.write('[\n]')
+                
+                print('Register deleted')
+
+            widget.destroy()
+            
+
+        msgbox = Gtk.MessageDialog(parent=button.get_toplevel(),
+                                   flags=Gtk.DialogFlags.MODAL,
+                                   type=Gtk.MessageType.WARNING,
+                                   buttons=Gtk.ButtonsType.YES_NO,
+                                   message_format='Are you sure that you want to delete the whole register?')
+
+        msgbox.connect('response', on_response)
+        msgbox.show()
+        
     
 
     def update_lcd(self):
