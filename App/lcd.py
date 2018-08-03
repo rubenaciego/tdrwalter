@@ -87,7 +87,6 @@ class LCD:
 
     def send_string(self, message, line):
         # Send string to display
-
         if not self.connected:
             return
 
