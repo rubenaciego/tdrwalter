@@ -130,12 +130,12 @@ class Application(Gtk.Application):
         data1 = app.datareader1.read_input()
         data2 = app.datareader2.read_input()
 
-        if app.datareader1.connected:
+        if not app.datareader1.connected:
             app.datareader1 = dataread.DataRead('/dev/ttyACM0')
-        if app.datareader2.connected:
+        if not app.datareader2.connected:
             app.datareader2 = dataread.DataRead('/dev/ttyACM1')
 
-        data.update_arduino_label()
+        app.update_arduino_label()
 
         data = {**data1, **data2}
 
@@ -181,7 +181,7 @@ class Application(Gtk.Application):
         self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
         self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
 
-        update_lcd()
+        self.update_lcd_label()
 
 
     def run(self):
