@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-import gi
 import dataread
 import lcd
 import grapher
 import bluetoothio
+
+import gi
 import datetime
-import matplotlib.pyplot as plt
 import threading
 import os
+import matplotlib.pyplot as plt
 from multiprocessing import Process
-
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import GLib, GObject, Gtk
