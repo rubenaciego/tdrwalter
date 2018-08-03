@@ -12,7 +12,7 @@ class DataRead:
             self.ser = serial.Serial(port, baud)
             self.connected = True
         except IOError:
-            print('IOError: Could not open the Serial Port ' + port)
+            print('Error: Could not open the Serial Port ' + port)
             self.connected = False
 
 

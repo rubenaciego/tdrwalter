@@ -97,12 +97,15 @@ class Application(Gtk.Application):
         value = ''.join([i for i in value if i in '0123456789'])
         widget.set_text(value)
 
-        if value == '': value = '0'
+        if value == '':
+            value = 0
+        else:
+            value = int(value)
 
         if widget == self.sizex_entry:
-            grapher.sizex = int(value)
+            grapher.sizex = value
         elif widget == self.sizey_entry:
-            grapher.sizey = int(value)
+            grapher.sizey = value
 
 
     def update_arduino_label(self):
@@ -236,7 +239,7 @@ class Application(Gtk.Application):
     
 
     def update_lcd(self):
-        # Maybe it should try to reconnect the LCD
+        # Maybe it should try to reconnect the LCDs
         # if it is disconnected
 
         self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
