@@ -30,5 +30,12 @@ class DataRead:
             data = json.loads(self.ser.readline().decode().strip().replace("'", '"'))
         except (UnicodeDecodeError, json.decoder.JSONDecodeError):
             data = {}
+        except Exception:
+            self.connected = False
+            data = {}
 
         return data
+
+    def write(self, data):
+        if self.connected:
+            self.ser.write(data)

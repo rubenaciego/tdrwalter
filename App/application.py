@@ -31,7 +31,7 @@ class Application(Gtk.Application):
         self.container = Gtk.Fixed()
         self.window.add(self.container)
 
-        self.bluetooth_label = Gtk.Label(label='Bluetooth: not connected')
+        self.bluetooth_label = Gtk.Label(label='Bluetooth: disconnected')
         self.container.put(self.bluetooth_label, 50, 50)
 
         self.data_label = Gtk.Label(label='Current data:')
@@ -40,10 +40,10 @@ class Application(Gtk.Application):
         self.label = Gtk.Label()
         self.container.put(self.label, 100, 210)
 
-        self.arduino_label = Gtk.Label(label='Arduino 1: not connected\nArduino 2: not connected')
+        self.arduino_label = Gtk.Label()
         self.container.put(self.arduino_label, 500, 210)
 
-        self.lcd_label = Gtk.Label(label='LCD 1: not connected\nLCD 2: not connected')
+        self.lcd_label = Gtk.Label()
         self.container.put(self.lcd_label, 500, 270)
 
         self.clear_reg_button = Gtk.Button(label='Clear register')
@@ -57,7 +57,10 @@ class Application(Gtk.Application):
         self.bluetoothdv = bluetoothio.BluetoothIO()
         
         self.lcd1 = lcd.LCD(0x3f)
-        #self.lcd2 = lcd.LCD(address ?)
+        self.lcd2 = lcd.LCD(0x28)
+
+        self.update_arduino_label()
+        self.update_lcd_label()
 
         self.graphprocess = Process(target=grapher.update_graph, args=[''])
 
@@ -66,14 +69,51 @@ class Application(Gtk.Application):
                 file.write('[\n]')
 
 
+    def update_arduino_label(self):
+        ardu_str = 'Arduino 1: '
+
+        if self.datareader1.connected:
+            ardu_str += 'connected\n'
+        else:
+            ardu_str += 'disconnected\n'
+
+        ardu_str += 'Arduino 2: '
+
+        if self.datareader2.connected:
+            ardu_str += 'connected'
+        else:
+            ardu_str += 'disconnected'
+
+        self.arduino_label.set_text(ardu_str)
+
+
+    def update_lcd_label(self):
+        lcd_str = 'LCD 1: '
+
+        if self.lcd1.connected:
+            lcd_str += 'connected\n'
+        else:
+            lcd_str += 'disconnected\n'
+
+        lcd_str += 'LCD 2: '
+
+        if self.lcd2.connected:
+            lcd_str += 'connected'
+        else:
+            lcd_str += 'disconnected'
+
+        self.lcd_label.set_text(lcd_str)
+
+
     @staticmethod
-    def update_bluetooth(btdevice):
+    def update_bluetooth(app):
         while True:
-            btdevice.wait_for_connection()
+            app.bluetoothdv.wait_for_connection()
+            app.bluetooth_label.set_text('Bluetooth: connected')
 
             try:
                 while True:
-                    data = btdevice.read()
+                    data = app.bluetoothdv.read()
                     if len(data) == 0: break
                     
                     print("Received " + data)
@@ -81,13 +121,21 @@ class Application(Gtk.Application):
             except IOError:
                 pass
 
-            btdevice.close()
+            app.bluetoothdv.close()
+            app.bluetooth_label.set_text('Bluetooth: disconnected')
 
 
     @staticmethod
     def set_text(app):
         data1 = app.datareader1.read_input()
         data2 = app.datareader2.read_input()
+
+        if app.datareader1.connected:
+            app.datareader1 = dataread.DataRead('/dev/ttyACM0')
+        if app.datareader2.connected:
+            app.datareader2 = dataread.DataRead('/dev/ttyACM1')
+
+        data.update_arduino_label()
 
         data = {**data1, **data2}
 
@@ -127,8 +175,13 @@ class Application(Gtk.Application):
     
 
     def update_lcd(self):
+        # Maybe it should try to reconnect the LCD
+        # if it is disconnected
+
         self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
-        #self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
+        self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
+
+        update_lcd()
 
 
     def run(self):
@@ -136,7 +189,7 @@ class Application(Gtk.Application):
         GLib.timeout_add(Application.UPDATE_INTERVAL, Application.set_text, self)
         GLib.timeout_add(Application.LCD_INTERVAL, Application.update_lcd, self)
 
-        btthread = threading.Thread(target=Application.update_bluetooth, args=[self.bluetoothdv])
+        btthread = threading.Thread(target=Application.update_bluetooth, args=[self])
         btthread.daemon = True
         btthread.start()
 
