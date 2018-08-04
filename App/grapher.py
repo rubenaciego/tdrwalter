@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import json
-import datetime
 
 sizex = 20
 sizey = 10
