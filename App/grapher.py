@@ -25,9 +25,7 @@ def update_graph(data):
     #print(xvalues)
     #print(yvalues)
 
-    x = []
-    for i in range(len(xvalues)):
-        x.append(i)
+    x = list(range(len(xvalues)))
 
     i = 0
     for key, val in yvalues.items():
