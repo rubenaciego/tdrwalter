@@ -240,7 +240,7 @@ class Application(Gtk.Application):
 
     def update_lcd(self):
         # Maybe it should try to reconnect the LCDs
-        # if it is disconnected
+        # if they are disconnected
 
         self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
         self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
