@@ -14,8 +14,10 @@ def update_graph(data):
     
     for i in data:
         for key, val in i.items():
-
-            if key == 'TIME':
+            
+            if key == 'GPS':
+                continue
+            elif key == 'TIME':
                 xvalues.append(val)
             else:
                 if not key in yvalues:
