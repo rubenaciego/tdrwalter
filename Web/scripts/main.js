@@ -1,3 +1,5 @@
+var gpsCoords = []
+
 window.onload = function() {
 	buildHtmlTable("#data", data);
 
@@ -5,9 +7,9 @@ window.onload = function() {
 
 	for (var i = 0; i < Object.keys(data[0]).length; i++)
 	{
-		if (Object.keys(data[0])[i] == "TIME")
+		if (Object.keys(data[0])[i] == "TIME" || Object.keys(data[0])[i] == "GPS")
 			continue;
-
+		
 		imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
 	}
 };
