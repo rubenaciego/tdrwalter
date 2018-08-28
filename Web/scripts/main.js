@@ -8,7 +8,7 @@ window.onload = function() {
 		if (Object.keys(data[0])[i] == "TIME")
 			continue;
 
-		imgDiv.innerHTML += '<br/><img src="../' + Object.keys(data[0])[i] + '.png"></img>';
+		imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
 	}
 };
 
