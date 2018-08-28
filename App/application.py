@@ -245,8 +245,7 @@ class Application(Gtk.Application):
                                    message_format='Are you sure that you want to delete the whole register?')
 
         msgbox.connect('response', on_response)
-        msgbox.show()
-        
+        msgbox.show()    
     
 
     def update_lcd(self):        
