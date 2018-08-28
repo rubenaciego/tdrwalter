@@ -5,7 +5,7 @@ import datetime
 
 class DataRead:
 
-    POSSIBLE_DATA = ('CO2', 'TEMP', 'CH4')
+    POSSIBLE_DATA = ('CO2', 'TEMP', 'CH4', 'GPS')
 
     def __init__(self, port, baud=9600):
         try:
