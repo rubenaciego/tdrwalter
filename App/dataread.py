@@ -5,7 +5,7 @@ import datetime
 
 class DataRead:
 
-    POSSIBLE_DATA = ('CO2', 'TEMP')
+    POSSIBLE_DATA = ('CO2', 'TEMP', 'CH4')
 
     def __init__(self, port, baud=9600):
         try:
@@ -35,6 +35,7 @@ class DataRead:
             data = {}
 
         return data
+
 
     def write(self, data):
         if self.connected:

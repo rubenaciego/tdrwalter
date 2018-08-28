@@ -18,7 +18,7 @@ from gi.repository import GLib, GObject, Gtk
 
 class Application(Gtk.Application):
 
-    UPDATE_INTERVAL = 25000
+    UPDATE_INTERVAL = 2500
     LCD_INTERVAL = 1000
 
     def __init__(self):
@@ -80,7 +80,7 @@ class Application(Gtk.Application):
         self.bluetoothdv = bluetoothio.BluetoothIO()
         
         self.lcd1 = lcd.LCD(0x3f)
-        self.lcd2 = lcd.LCD(0x28)
+        self.lcd2 = lcd.LCD(0x20)
 
         self.update_arduino_label()
         self.update_lcd_label()
@@ -241,6 +241,12 @@ class Application(Gtk.Application):
     def update_lcd(self):
         # Maybe it should try to reconnect the LCDs
         # if it is disconnected
+        
+        if not self.lcd1.connected:
+            self.lcd1 = lcd.LCD(0x3f)
+            
+        if not self.lcd2.connected:
+            self.lcd2 = lcd.LCD(0x20)
 
         self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
         self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)

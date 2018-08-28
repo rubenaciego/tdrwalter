@@ -5,6 +5,7 @@ import datetime
 sizex = 20
 sizey = 10
 showgraph = False
+graph_params = 'ro'
 
 def update_graph(data):
     data = json.loads(data)
@@ -34,7 +35,7 @@ def update_graph(data):
     for key, val in yvalues.items():
         plt.figure(i, figsize=(sizex, sizey))
         plt.xticks(x, xvalues)
-        plt.plot(x, val, 'ro')
+        plt.plot(x, val, graph_params)
         plt.xlabel('Time')
         plt.ylabel(key)
         plt.savefig(key + '.png')

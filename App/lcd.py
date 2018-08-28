@@ -25,8 +25,9 @@ class LCD:
 
     
     def __init__(self, i2c_address):
-        self.I2C_ADDR  = i2c_address # I2C device address
+        self.I2C_ADDR = i2c_address # I2C device address
         self.backlight = True
+        self.connected = True
 
         #Open I2C interface
         #self.bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
