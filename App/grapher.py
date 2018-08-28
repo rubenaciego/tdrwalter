@@ -43,7 +43,7 @@ def update_graph(data):
         
         plt.xlabel('Time')
         plt.ylabel(key)
-        plt.savefig(key + '.png')
+        plt.savefig('Web/' + key + '.png')
         i += 1
 
     print('Images generated')
