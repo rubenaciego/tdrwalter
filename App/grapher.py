@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import json
-import datetime
 
 sizex = 20
 sizey = 10
@@ -27,15 +26,19 @@ def update_graph(data):
     #print(xvalues)
     #print(yvalues)
 
-    x = []
-    for i in range(len(xvalues)):
-        x.append(i)
+    x = list(range(len(xvalues)))
 
     i = 0
     for key, val in yvalues.items():
         plt.figure(i, figsize=(sizex, sizey))
         plt.xticks(x, xvalues)
-        plt.plot(x, val, graph_params)
+
+        try:
+            plt.plot(x, val, graph_params)
+        except ValueError:
+            print('Invalid graph parameter')
+            return
+        
         plt.xlabel('Time')
         plt.ylabel(key)
         plt.savefig(key + '.png')

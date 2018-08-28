@@ -65,13 +65,20 @@ class Application(Gtk.Application):
         self.sizey_entry.connect('changed', self.on_size_changed)
         self.container.put(self.sizey_entry, 420, 480)
 
+        self.graphparams_entry = Gtk.Entry()
+        self.graphparams_entry.connect('changed', self.on_params_changed)
+        self.container.put(self.graphparams_entry, 420, 520)
+
         self.sizex_entry.set_text(str(grapher.sizex))
         self.sizey_entry.set_text(str(grapher.sizey))
+        self.graphparams_entry.set_text(grapher.graph_params)
 
         self.container.put(Gtk.Label(label='X size for graphics (inches)'),
                            600, 440)
-        self.container.put(Gtk.Label(label='Y size for graphics (inches)'),
+        self.container.put(Gtk.Label(label='Y size for grahics (inches)'),
                            600, 480)
+        self.container.put(Gtk.Label(label='Parameters for the graph'),
+                           600, 520)
 
         self.window.show_all()
 
@@ -90,6 +97,10 @@ class Application(Gtk.Application):
         if not os.path.exists('register.json'):
             with open('register.json', 'w') as file:
                 file.write('[\n]')
+
+
+    def on_params_changed(self, widget):
+        grapher.graph_params = widget.get_text().strip()
 
 
     def on_size_changed(self, widget):
