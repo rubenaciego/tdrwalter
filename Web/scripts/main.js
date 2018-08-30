@@ -1,4 +1,3 @@
-var gpsCoords = []
 
 window.onload = function() {
 	buildHtmlTable("#data", data);
@@ -11,8 +10,18 @@ window.onload = function() {
 			continue;
 		
 		imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
-	}
+  }
 };
+
+function initMaps()
+{
+  mapLibLoaded = true;
+
+  while (mapsToInstance.length > 0)
+    mapsToInstance.pop().init();
+
+  var map = new Map('map', -25.344, 131.036, 4);
+}
 
 function buildHtmlTable(selector, myList)
 {
