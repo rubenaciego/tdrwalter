@@ -192,7 +192,10 @@ class Application(Gtk.Application):
 
         for i in dataread.DataRead.POSSIBLE_DATA:
             if i not in data:
-                data[i] = 0
+                if i == 'GPS':
+                    data[i] = '41.535791, 2.210348'
+                else:
+                    data[i] = 0
 
         data['TIME'] = datetime.datetime.now().strftime('%H:%M:%S %d/%m/%Y')
         stringdata = ''
