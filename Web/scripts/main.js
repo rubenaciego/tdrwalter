@@ -11,7 +11,10 @@ window.onload = function()
 			continue;
 		
 		imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
-  }
+    }
+
+    var gpsCoord = data[data.length - 1]["GPS"].split(",");
+    var map = new Map('map', parseFloat(gpsCoord[0]), parseFloat(gpsCoord[1]), 4);
 };
 
 function initMaps()
@@ -20,8 +23,6 @@ function initMaps()
 
     while (mapsToInstance.length > 0)
         mapsToInstance.pop().init();
-
-    var map = new Map('map', -25.344, 131.036, 4);
 }
 
 function buildHtmlTable(selector, myList)
