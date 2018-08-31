@@ -1,6 +1,7 @@
 
-window.onload = function() {
-	buildHtmlTable("#data", data);
+window.onload = function()
+{
+    buildHtmlTable("#data", data);
 
 	const imgDiv = document.getElementById("images");
 
@@ -15,59 +16,59 @@ window.onload = function() {
 
 function initMaps()
 {
-  mapLibLoaded = true;
+    mapLibLoaded = true;
 
-  while (mapsToInstance.length > 0)
-    mapsToInstance.pop().init();
+    while (mapsToInstance.length > 0)
+        mapsToInstance.pop().init();
 
-  var map = new Map('map', -25.344, 131.036, 4);
+    var map = new Map('map', -25.344, 131.036, 4);
 }
 
 function buildHtmlTable(selector, myList)
 {
-  var columns = addAllColumnHeaders(myList, selector);
+    var columns = addAllColumnHeaders(myList, selector);
   
-  for (var i = 0; i < myList.length; i++)
-  {
-    if (myList[i] == null)
-      continue;
-
-    var row$ = $('<tr/>');
-
-    for (var colIndex = 0; colIndex < columns.length; colIndex++)
+    for (var i = 0; i < myList.length; i++)
     {
-      var cellValue = myList[i][columns[colIndex]];
-      if (cellValue == null) cellValue = "";
-      row$.append($('<td/>').html(cellValue));
-    }
+        if (myList[i] == null)
+            continue;
+
+        var row$ = $('<tr/>');
+
+        for (var colIndex = 0; colIndex < columns.length; colIndex++)
+        {
+            var cellValue = myList[i][columns[colIndex]];
+            if (cellValue == null) cellValue = "";
+                row$.append($('<td/>').html(cellValue));
+        }
  
-    $(selector).append(row$);
-  }
+        $(selector).append(row$);
+    }
 }
 
 function addAllColumnHeaders(myList, selector)
 {
-  var columnSet = [];
-  var headerTr$ = $('<tr/>');
+    var columnSet = [];
+    var headerTr$ = $('<tr/>');
 
-  for (var i = 0; i < myList.length; i++)
-  {
-    if (myList[i] == null)
-      continue;
-
-    var rowHash = myList[i];
-
-    for (var key in rowHash)
+    for (var i = 0; i < myList.length; i++)
     {
-      if ($.inArray(key, columnSet) == -1)
-      {
-        columnSet.push(key);
-        headerTr$.append($('<th/>').html(key));
-      }
+        if (myList[i] == null)
+            continue;
+
+        var rowHash = myList[i];
+
+        for (var key in rowHash)
+        {
+            if ($.inArray(key, columnSet) == -1)
+            {
+                columnSet.push(key);
+                headerTr$.append($('<th/>').html(key));
+            }
+        }
     }
-  }
 
-  $(selector).append(headerTr$);
+    $(selector).append(headerTr$);
 
-  return columnSet;
+    return columnSet;
 }
