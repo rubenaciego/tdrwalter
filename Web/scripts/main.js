@@ -9,8 +9,8 @@ window.onload = function()
 	{
 		if (Object.keys(data[0])[i] == "TIME" || Object.keys(data[0])[i] == "GPS")
 			continue;
-		
-		imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
+        
+        imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
     }
 
     var gpsCoord = data[data.length - 1]["GPS"].split(",");
