@@ -1,10 +1,11 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="cat">
 	
 	<?php $data = fread(fopen("../register.json", "r"), filesize("../register.json")); ?>
 	
     <head>
-        <title>WALTER</title>
+		<title>WALTER</title>
+		<meta charset="UTF-8">
 
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="scripts/map.js"></script>
@@ -14,9 +15,17 @@
 		<script>
 			var data = <?php echo $data;?>;
 		</script>
+
+		<link rel="stylesheet" href="styles/main.css">
     </head>
 
     <body>
+	<div class="topnav">
+		<a class="active" href="index.php">Inici</a>
+		<a href="data.html">Dades que s'estudien</a>
+		<a href="about.html">Informació sobre el projecte</a>
+	</div>
+		<br/>
 		<p>Dades recollides</p>
 		<table id="data" border="2"></table>
 		<p>Gràfics</p>
