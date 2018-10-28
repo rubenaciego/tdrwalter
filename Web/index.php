@@ -19,7 +19,7 @@
     <body>
 		<p>Dades recollides</p>
 		<table id="data" border="2"></table>
-		<p>Imatges</p>
+		<p>Gràfics</p>
 		<div id="images"></div>
 		<div id="map" style="height: 400px; width: 400px;"></div>
     </body>
