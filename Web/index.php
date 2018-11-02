@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="cat">
 	
 	<?php $data = fread(fopen("../register.json", "r"), filesize("../register.json")); ?>
@@ -20,6 +20,7 @@
     </head>
 
     <body>
+	<div style="padding: 10px;">
 	<div class="topnav">
 		<a class="active" href="index.php">Inici</a>
 		<a href="data.html">Dades que s'estudien</a>
@@ -27,10 +28,13 @@
 	</div>
 		<br/>
 		<p>Dades recollides</p>
-		<table id="data" border="2"></table>
-		<p>Gràfics</p>
+		<table id="data"></table>
+		<p>Gràfic</p>
 		<div id="images"></div>
-		<div id="map" style="height: 400px; width: 400px;"></div>
+		<p>Ubicació actual</p>
+		<div id="map"></div>
+
+		</div>
     </body>
 
 </html>

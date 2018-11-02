@@ -1,6 +1,7 @@
 .topnav {
     background-color: #333;
     overflow: hidden;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 
 /* Style the links inside the navigation bar */
@@ -23,4 +24,48 @@
 .topnav a.active {
     background-color: #4CAF50;
     color: white;
+}
+
+#data {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#data td, #data th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#data tr:nth-child(even){background-color: #f2f2f2;}
+
+#data th:hover {background-color: rgb(11, 117, 34);}
+
+#data th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#map
+{
+    height: 400px;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.graph
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+p
+{
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 18px;
 }

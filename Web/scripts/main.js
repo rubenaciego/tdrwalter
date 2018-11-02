@@ -1,20 +1,42 @@
 
+var units = {
+	'CO2': 'ppm', 'TEMP': 'ºC', 'Turbidity': 'NTU',
+	'LUXES': 'lx', 'TEMPH2O': 'ºC'
+}
+
+var headers = [];
+
 window.onload = function()
 {
-    buildHtmlTable("#data", data);
+    var data2 = [];
 
-	const imgDiv = document.getElementById("images");
+    for (value in data)
+    {
+        var val = {};
 
-	for (var i = 0; i < Object.keys(data[0]).length; i++)
-	{
-		if (Object.keys(data[0])[i] == "TIME" || Object.keys(data[0])[i] == "GPS")
-			continue;
-        
-        imgDiv.innerHTML += '<br/><img src="' + Object.keys(data[0])[i] + '.png"></img>';
+        for (var i = 0; i < Object.keys(data[value]).length; i++)
+        {
+            var key = Object.keys(data[value])[i];
+            var str = key;
+
+            if (units[key] != undefined)
+                str = str + " (" + units[key] + ")";
+            
+            val[str] = data[value][key];
+        }
+
+        data2.push(val);
     }
 
+    buildHtmlTable("#data", data2);
+
+    headers = document.getElementsByTagName("th");
+
+    for (var i = 0; i < headers.length; i++)
+        headers[i].onclick = function() { showGraph(this); };
+
     var gpsCoord = data[data.length - 1]["GPS"].split(",");
-    var map = new Map('map', parseFloat(gpsCoord[0]), parseFloat(gpsCoord[1]), 4);
+    var map = new Map('map', parseFloat(gpsCoord[0]), parseFloat(gpsCoord[1]), 12);
 };
 
 function initMaps()
@@ -72,4 +94,13 @@ function addAllColumnHeaders(myList, selector)
     $(selector).append(headerTr$);
 
     return columnSet;
+}
+
+function showGraph(elem)
+{
+    var name = elem.innerHTML.split(' ')[0];
+    const imgDiv = document.getElementById("images");
+
+	if (name != "TIME" && name != "GPS")
+        imgDiv.innerHTML = '<br/><img class="graph" src="' + name + '.png"></img><br/>';
 }
