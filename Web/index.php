@@ -4,7 +4,7 @@
 	<?php $data = fread(fopen("../register.json", "r"), filesize("../register.json")); ?>
 	
     <head>
-		<title>WALTER</title>
+		<title>Estació WALTER</title>
 		<meta charset="UTF-8">
 
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
