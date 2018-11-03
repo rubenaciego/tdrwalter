@@ -95,7 +95,7 @@ class LCD:
         if not self.connected:
             return
 
-        message = message.ljust(LCD.WIDTH, " ")
+        message = message[:LCD.WIDTH].ljust(LCD.WIDTH, " ")
 
         self.send_byte(line, LCD.CMD)
 
