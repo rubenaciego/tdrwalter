@@ -87,8 +87,8 @@ class LCD:
         
         
     def clear(self):
-        self.send_string('', 1)
-        self.send_string('', 2)
+        self.send_string('', LCD.LINE_1)
+        self.send_string('', LCD.LINE_2)
 
         
     def send_string(self, message, line):
