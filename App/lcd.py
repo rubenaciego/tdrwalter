@@ -61,7 +61,7 @@ class LCD:
             return
 
         bits_high = mode | (bits & 0xF0) | (LCD.BACKLIGHT if self.backlight else LCD.NO_BACKLIGHT)
-        bits_low = mode | ((bits << 4) & 0xF0) | (LCD.BACKLIGHT if self.backlight else LCD.NO_BACKLIGHT)
+        bits_low = mode | ((bits<<4) & 0xF0) | (LCD.BACKLIGHT if self.backlight else LCD.NO_BACKLIGHT)
 
         # High bits
 
@@ -85,17 +85,13 @@ class LCD:
         self.bus.write_byte(self.I2C_ADDR, (bits & ~LCD.ENABLE))
         time.sleep(LCD.E_DELAY)
         
-        
-    def clear(self):
-        self.send_byte(0x01, LCD.CMD)
 
-        
     def send_string(self, message, line):
         # Send string to display
         if not self.connected:
             return
 
-        message = message[:LCD.WIDTH].ljust(LCD.WIDTH, " ")
+        message = message.ljust(LCD.WIDTH, " ")
 
         self.send_byte(line, LCD.CMD)
 

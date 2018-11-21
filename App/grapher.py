@@ -7,6 +7,7 @@ showgraph = False
 graph_params = 'ro'
 
 def update_graph(data):
+    
     data = json.loads(data)
     
     xvalues = []
@@ -25,8 +26,8 @@ def update_graph(data):
                 
                 yvalues[key].append(val)
 
-    #print(xvalues)
-    #print(yvalues)
+##    print(xvalues)
+##    print(yvalues)
 
     x = list(range(len(xvalues)))
 

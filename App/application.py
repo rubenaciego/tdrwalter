@@ -18,10 +18,13 @@ from gi.repository import GLib, GObject, Gtk
 
 class Application(Gtk.Application):
 
-    UPDATE_INTERVAL = 2500
+    UPDATE_INTERVAL = 2000
+    GRAPH_INTERVAL = 60000 * 5
     LCD_INTERVAL = 1000
 
     def __init__(self):
+        self.ticks = 0
+        
         self.window = Gtk.Window(title='TDR')
         self.window.connect('destroy', Gtk.main_quit)
         self.window.set_resizable(False)
@@ -205,6 +208,12 @@ class Application(Gtk.Application):
 
         app.label.set_text(stringdata)
         app.bluetoothdv.write(str(data).replace("'", '"'))
+
+        if not app.ticks * Application.UPDATE_INTERVAL > Application.GRAPH_INTERVAL:
+            app.ticks += 1
+            return True
+        else:
+            app.ticks = 0
         
         with open('register.json', 'r') as file:
             read = file.read()

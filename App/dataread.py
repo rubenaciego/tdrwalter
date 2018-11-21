@@ -5,7 +5,7 @@ import datetime
 
 class DataRead:
 
-    POSSIBLE_DATA = ('CO2', 'TEMP', 'CH4', 'GPS')
+    POSSIBLE_DATA = ('CO2', 'TEMP', 'LUXES', 'GPS', 'Turbidity', 'pH', 'TEMPH2O')
 
     def __init__(self, port, baud=9600):
         try:
@@ -26,8 +26,11 @@ class DataRead:
         if not self.connected:
             return {}
         
-        try:
-            data = json.loads(self.ser.readline().decode().strip().replace("'", '"'))
+        try:  
+            while self.ser.in_waiting > 0:
+                string = self.ser.readline().decode().strip().replace("'", '"')
+            
+            data = json.loads(string)
         except (UnicodeDecodeError, json.decoder.JSONDecodeError):
             data = {}
         except Exception:
