@@ -20,10 +20,16 @@ class Application(Gtk.Application):
 
     UPDATE_INTERVAL = 2000
     GRAPH_INTERVAL = 60000 * 5
-    LCD_INTERVAL = 1000
+    LCD_INTERVAL = 5000
+    UNITS = {
+	'CO2': 'ppm', 'TEMP': 'ºC', 'TURBIDITY': 'NTU',
+	'LUXES': 'lx', 'TEMPH2O': 'ºC'
+    }
 
     def __init__(self):
         self.ticks = 0
+        self.lcd_itr = 0
+        self.data = {}
         
         self.window = Gtk.Window(title='TDR')
         self.window.connect('destroy', Gtk.main_quit)
@@ -191,23 +197,23 @@ class Application(Gtk.Application):
 
         app.update_arduino_label()
 
-        data = {**data1, **data2}
+        app.data = {**data1, **data2}
 
         for i in dataread.DataRead.POSSIBLE_DATA:
-            if i not in data:
+            if i not in app.data:
                 if i == 'GPS':
-                    data[i] = '41.535791, 2.210348'
+                    app.data[i] = '41.535791, 2.210348'
                 else:
-                    data[i] = 0
+                    app.data[i] = 0
 
-        data['TIME'] = datetime.datetime.now().strftime('%H:%M:%S %d/%m/%Y')
+        app.data['TIME'] = datetime.datetime.now().strftime('%H:%M:%S %d/%m/%Y')
         stringdata = ''
         
-        for key, val in data.items():
+        for key, val in app.data.items():
             stringdata += key + ': ' + str(val) + '\n'
 
         app.label.set_text(stringdata)
-        app.bluetoothdv.write(str(data).replace("'", '"'))
+        app.bluetoothdv.write(str(app.data).replace("'", '"'))
 
         if not app.ticks * Application.UPDATE_INTERVAL > Application.GRAPH_INTERVAL:
             app.ticks += 1
@@ -220,7 +226,7 @@ class Application(Gtk.Application):
 
         with open('register.json', 'w+') as file:
             read = read[:read.find(']')]
-            register = read + '\t' + (',' if read.find('{') != -1 else '') + str(data).replace("'", '"') + '\n]'
+            register = read + '\t' + (',' if read.find('{') != -1 else '') + str(app.data).replace("'", '"') + '\n]'
             file.write(register)
 
         if (app.graphprocess.is_alive()):
@@ -263,13 +269,31 @@ class Application(Gtk.Application):
     def update_lcd(self):        
         if not self.lcd1.connected:
             self.lcd1 = lcd.LCD(0x3f)
-            
+                
         if not self.lcd2.connected:
             self.lcd2 = lcd.LCD(0x20)
+        UNUSED_PARAMS = ('GPS', 'TIME')
 
-        self.lcd1.send_string('Hello LCD1!', lcd.LCD.LINE_1)
-        self.lcd2.send_string('Hello LCD2!', lcd.LCD.LINE_1)
+        if len(self.data) == 0:
+            return
 
+        while dataread.DataRead.POSSIBLE_DATA[self.lcd_itr] in UNUSED_PARAMS:
+            self.lcd_itr += 1
+
+        name = dataread.DataRead.POSSIBLE_DATA[self.lcd_itr]
+
+        self.lcd1.send_string(name + '(' + Application.UNITS[name] + '): ' + str(self.data[name]), lcd.LCD.LINE_1)
+
+        self.lcd_itr += 1
+
+        while dataread.DataRead.POSSIBLE_DATA[self.lcd_itr] in UNUSED_PARAMS:
+            self.lcd_itr1 += 1
+
+        name = dataread.DataRead.POSSIBLE_DATA[self.lcd_itr]
+
+        self.lcd1.send_string(name + '(' + Application.UNITS[name] + '): ' + str(self.data[name]), lcd.LCD.LINE_2)
+
+        self.lcd_itr += 1
         self.update_lcd_label()
 
 

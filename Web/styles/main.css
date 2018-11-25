@@ -69,3 +69,10 @@ p
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 18px;
 }
+
+.img
+{
+    display: inline-block;
+    width: 30%;
+    padding: 20px;
+}
